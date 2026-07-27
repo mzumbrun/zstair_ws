@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"name": "scissor_esp32",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"ROS2.distro": "jazzy",
+		"python.autoComplete.extraPaths": [
+			"/opt/ros/jazzy/lib/python3.12/site-packages",
+			"/home/mikez/alexa/skill/skill-env"
+		],
+		"python.analysis.extraPaths": [
+			"/opt/ros/jazzy/lib/python3.12/site-packages",
+			"/home/mikez/alexa/skill/skill-env"
+		]
+	}
+}
