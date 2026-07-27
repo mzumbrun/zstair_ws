@@ -33,8 +33,8 @@
 #define H_PWM_CHAN      0
 #define H_PWM_PERIOD_US 20000UL
 
-#define H_US_MIN        500       // Stingray-2 full travel, one end
-#define H_US_MAX        2500      // Stingray-2 full travel, other end
+#define H_US_MIN        1020    // Stingray-2 full travel, one end
+#define H_US_MAX        2000     // Stingray-2 full travel, other end
 #define H_US_CENTER     1500      // power-on / safe default
 
 // ---------------------------------------------------------------- state
