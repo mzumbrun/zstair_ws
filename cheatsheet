@@ -1,0 +1,11 @@
+to start micro ROS
+    source ~/uros_ws/install/local_setup.bash
+    ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
+
+Discipline for the rest of this session: the ESP32 has no reconnect logic, so agent first, then reset the ESP32 — every time you restart the agent, reset the board. Until you implement the rmw_uros_ping_agent reconnect in loop() (your P2 item), that ordering is the workaround.
+
+no need to run this in each window at start
+    source ~/uros_ws/install/local_setup.bash
+
+control the servo
+    ros2 topic pub -1 /h_axis/cmd_us std_msgs/msg/Int32 "{data: 1500}"
