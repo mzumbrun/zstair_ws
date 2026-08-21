@@ -103,9 +103,9 @@ static volatile uint32_t v_last_cmd_ms = 0;
 static VState            v_fs_state     = V_ARMED;   // named to avoid v_state_* collision
 
 // Layer A: screw-mm <-> counts (datasheet-grounded 796.1, carried from 1A)
-static const float   V_COUNTS_PER_MM = 796.1f;
+static const float   V_COUNTS_PER_MM = 1194.1;  // updated for RH only lead screw, 2mm pitch
 static const int32_t V_MIN_COUNTS    = 0;       // = storage / homed encoder reference
-static const int32_t V_MAX_COUNTS    = 22000;   // measured, just short of inner dead zone
+static const int32_t V_MAX_COUNTS    = 86000;   // measured wheels above ground at 8.4 inches
 
 // 1A-proven gentle move params (speed 1000 cts/s ~= 1.26 mm/s screw)
 static const uint32_t V_ACCEL  = 2000;
@@ -116,7 +116,7 @@ static const uint8_t  V_FLAG   = 1;             // execute now
 static const uint8_t  V_FAULT_TRIP = 5;         // consecutive fails -> 1D fail-safe
 
 // --- V-axis telemetry (1C) ----------------------------------------------
-static const uint32_t V_TELEM_PERIOD_MS = 50;   // 20 Hz publish cadence
+static const uint32_t V_TELEM_PERIOD_MS = 100;   // 10 Hz publish cadence
 
 // ---------------------------------------------------------------- state
 
@@ -260,22 +260,37 @@ static void service_telemetry() {
 
   uint8_t  enc_status = 0;
   bool     enc_valid  = false;
+
+  const uint32_t t0 = micros();
   uint32_t raw = motors.ReadEncM1(RC_ADDRESS, &enc_status, &enc_valid);
+  const uint32_t t1 = micros();
 
   int16_t i_m1 = 0, i_m2 = 0;
   const bool cur_ok = motors.ReadCurrents(RC_ADDRESS, i_m1, i_m2);
+  const uint32_t t2 = micros();
+
+  // --- TEMP bring-up instrumentation (remove after diagnosis) ---
+  //Serial.printf("enc=%lu us valid=%d | cur=%lu us ok=%d | faults=%lu\n",
+  //              (unsigned long)(t1 - t0), enc_valid ? 1 : 0,
+  //              (unsigned long)(t2 - t1), cur_ok ? 1 : 0,
+  //              (unsigned long)v_telem_fault_count);
+  //Serial.printf("sleep=%d rssi=%d status=%d\n",
+  //              WiFi.getSleep(), WiFi.RSSI(), WiFi.status());
+  //              // --- end instrumentation ---
 
   if (!enc_valid || !cur_ok) {            // §6: check valid before publishing
     if (v_telem_fault_count < 0xFFFFFFFF) v_telem_fault_count++;
     return;                               // skip this frame, retry next cadence
   }
 
-  v_state_buf[0] = (int32_t)raw / V_COUNTS_PER_MM;   // screw mm (cast before divide)
-  v_state_buf[1] = i_m1 / 100.0f;                    // A (RoboClaw = 10 mA units)
+  v_state_buf[0] = (int32_t)raw / V_COUNTS_PER_MM;   // screw mm
+  v_state_buf[1] = i_m1 / 100.0f;                    // A
   v_state_buf[2] = (float)v_fs_state;                // 0 armed, 1 wd-trip, 2 fault-trip
-  RCSOFT(rcl_publish(&v_state_pub, &v_state_msg, NULL));   // non-fatal on transient fail
+  
+  const uint32_t t3 = micros();
+  RCSOFT(rcl_publish(&v_state_pub, &v_state_msg, NULL));
+  Serial.printf("pub=%lu us\n", (unsigned long)(micros() - t3));
 }
-
 // ---------------------------------------------------------------- fail-safe (1D)
 
 void v_trip(VState reason) {
@@ -314,10 +329,18 @@ void setup() {
   // until a /v_axis/cmd_mm message arrives.
   Serial2.begin(115200, SERIAL_8N1, V_UART_RX_PIN, V_UART_TX_PIN);
 
+  Serial.begin(115200);
+  Serial.println("BOOT OK");
+
   IPAddress agent_ip(AGENT_IP_0, AGENT_IP_1, AGENT_IP_2, AGENT_IP_3);
   set_microros_wifi_transports((char *)WIFI_SSID, (char *)WIFI_PASSWORD, agent_ip, AGENT_PORT);
 
+  WiFi.setSleep(false);      // disable modem power-save; needed for steady UDP telemetry
+  Serial.printf("wifi sleep mode = %d\n", WiFi.getSleep());   // expect 0
+
   delay(2000);
+
+  // Serial.printf("rssi=%d\n", WiFi.RSSI());
 
   allocator = rcl_get_default_allocator();
   RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));

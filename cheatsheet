@@ -9,3 +9,20 @@ no need to run this in each window at start
 
 control the servo
     ros2 topic pub -1 /h_axis/cmd_us std_msgs/msg/Int32 "{data: 1500}"
+
+
+control v-h_axis
+    window-1
+        start a heartbeat
+            ros2 topic pub --rate 10 /v_axis/cmd_mm std_msgs/msg/Float32 "{data: 0.0}"
+        clear the latch
+            ros2 topic pub --once /v_axis/reset std_msgs/msg/Bool "{data: true}"
+    window-2
+        check the state
+            ros2 topic echo /v_axis/state
+    window-3
+        check the HZ
+            ros2 topic hz /v_axis/state
+
+
+
