@@ -1,0 +1,26 @@
+# HARP cart drive, rpi4u. Rung 2a (read-only).
+# Constants from Cart Drive Bring-Up As-Run v1.0, section 4.
+harp_cart_drive:
+  ros__parameters:
+    port: /dev/serial/by-id/usb-Basicmicro_Inc._USB_Roboclaw_2x15A-if00
+    address: 128                  # 0x80
+    loop_hz: 20.0                 # twist quantization +/-4.2 mm/s (2% at 0.21 m/s)
+    battery_hz: 1.0
+    battery_offset_v: 0.4         # RoboClaw reads ~0.4 V low (bring-up 5.8)
+    low_voltage_warn_v: 10.8      # true volts; RoboClaw cutoff ~10.1 V true
+    fault_consecutive_limit: 3
+    stats_period_s: 10.0
+    speed_cap_counts_s: 2000.0    # plausibility check only in 2a
+
+    counts_per_rev: 1425.1
+    wheel_diameter_m: 0.0958
+    wheel_separation_m: 0.430
+    left_wheel_multiplier: 1.0    # M1. Symmetric for Step 2 acceptance; later ~1.0021
+    right_wheel_multiplier: 1.0   # M2. Later ~0.9979
+
+    publish_tf: true              # set false in Step 3 when the EKF owns odom->base_link
+    odom_frame: odom
+    base_frame: base_link
+    # x, y, z, roll, pitch, yaw. Placeholders until Step 3 tuning.
+    # Yaw deliberately loose: wheels are not trusted for heading (+/-2.4%/turn).
+    pose_covariance_diagonal: [1.0e-4, 1.0e-4, 1.0e6, 1.0e6, 1.0e6, 1.0e-1]
