@@ -20,8 +20,8 @@ def forward_pose(geo, d1, d2, steps=1):
 
 
 def test_counts_per_meter():
-    assert GEO.counts_per_m_left == pytest.approx(4735.1, abs=0.1)
-    assert GEO.counts_per_m_right == pytest.approx(4735.1, abs=0.1)
+    assert GEO.counts_per_m_left == pytest.approx(4667.4, abs=0.1)
+    assert GEO.counts_per_m_right == pytest.approx(4667.4, abs=0.1)
 
 
 def test_wrap_delta():
@@ -31,7 +31,7 @@ def test_wrap_delta():
 
 
 def test_straight_is_exact():
-    x, y, th = forward_pose(GEO, 23675, 23675)     # 5 m at 4735.1 counts/m
+    x, y, th = forward_pose(GEO, 23675, 23675)     # 5.07 m at 4667.4 counts/m
     assert x == pytest.approx(23675 / GEO.counts_per_m_left, rel=1e-12)
     assert y == 0.0 and th == 0.0
 
@@ -46,7 +46,7 @@ def test_bringup_spin_rows_give_correct_yaw_sign(m1, m2, sign):
     dl, dr = wheel_distances(GEO, m1, m2)
     _, dth = body_increment(GEO, dl, dr)
     assert math.copysign(1, dth) == sign
-    assert abs(math.degrees(dth)) == pytest.approx(361, abs=1.5)
+    assert abs(math.degrees(dth)) == pytest.approx(366.2, abs=1.5)   # 361 at D_eff 95.8, x 97.19/95.8
 
 
 def test_chunked_integration_matches_lump_on_straight():
@@ -80,13 +80,13 @@ def test_arc_midpoint_accuracy_at_20hz_max_spin_rate():
 
 def test_larger_left_wheel_curves_right():
     geo = DriveGeometry(left_multiplier=96.0 / 95.8, right_multiplier=95.6 / 95.8)
-    x, y, th = forward_pose(geo, 23675, 23675, steps=500)   # equal counts, ~5 m
+    x, y, th = forward_pose(geo, 23337, 23337, steps=500)   # equal counts, 5.0 m at 4667.4
     assert th < 0 and y < 0                                  # CW, to the right
-    assert -y * 1000 == pytest.approx(116, rel=0.05)         # predicted 116 mm
+    assert -y * 1000 == pytest.approx(121.35, rel=0.01)       # s^2*eps/2b, s=5.0 m, eps=0.004175
 
 
 def test_inverse_test_speed_and_signs():
-    assert inverse(GEO, 0.21118839, 0.0, 2000) == (1000, 1000)
+    assert inverse(GEO, 0.21425261, 0.0, 2000) == (1000, 1000)
     m1, m2 = inverse(GEO, 0.0, 1.0, 2000)                    # CCW spin
     assert m1 < 0 < m2 and m1 == -m2
 
@@ -109,9 +109,9 @@ def test_inverse_forward_round_trip():
 
 # ---- rung 2b hand-calculated target table (independent of inverse()) ------
 @pytest.mark.parametrize("v,w,m1,m2", [
-    (0.2112, 0.0, 1000, 1000),      # 0.2112 x 4735.1 = 1000.1
-    (-0.2112, 0.0, -1000, -1000),
-    (0.0, 0.5, -509, 509),          # 0.5 x 0.215 = 0.1075 m/s x 4735.1 = 509.0
+    (0.21425, 0.0, 1000, 1000),      # 0.2112 x 4735.1 = 1000.1
+    (-0.21425, 0.0, -1000, -1000),
+    (0.0, 0.5, -502, 502),          # 0.5 x 0.215 = 0.1075 m/s x 4735.1 = 509.0
     (0.42, 1.0, 646, 2000),         # 970.7 / 3006.8 scaled by 2000/3006.8
 ])
 def test_rung2b_target_table(v, w, m1, m2):

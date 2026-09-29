@@ -18,7 +18,7 @@ harp_cart_drive:
     stop_timeout_s: 2.0           # controlled stop on Ctrl-C/SIGTERM
 
     counts_per_rev: 1425.1
-    wheel_diameter_m: 0.0958
+    wheel_diameter_m: 0.09719
     wheel_separation_m: 0.430
     left_wheel_multiplier: 1.0    # M1. Symmetric for Step 2 acceptance; later ~1.0021
     right_wheel_multiplier: 1.0   # M2. Later ~0.9979

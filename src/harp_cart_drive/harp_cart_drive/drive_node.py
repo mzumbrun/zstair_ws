@@ -69,7 +69,7 @@ class CartDriveNode(Node):
                                [1e-4, 1e-4, 1e6, 1e6, 1e6, 1e-1]).value)
         self.geo = DriveGeometry(
             counts_per_rev=float(p("counts_per_rev", 1425.1).value),
-            wheel_diameter_m=float(p("wheel_diameter_m", 0.0958).value),
+            wheel_diameter_m=float(p("wheel_diameter_m", 0.09719).value),
             wheel_separation_m=float(p("wheel_separation_m", 0.430).value),
             left_multiplier=float(p("left_wheel_multiplier", 1.0).value),
             right_multiplier=float(p("right_wheel_multiplier", 1.0).value),

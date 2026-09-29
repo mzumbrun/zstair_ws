@@ -28,7 +28,7 @@ def wrap_delta(new_raw: int, old_raw: int) -> int:
 @dataclass(frozen=True)
 class DriveGeometry:
     counts_per_rev: float = 1425.1
-    wheel_diameter_m: float = 0.0958
+    wheel_diameter_m: float = 0.09719
     wheel_separation_m: float = 0.430
     # Per-wheel multipliers on the effective diameter. 1.0 = symmetric model
     # (Step 2 acceptance). Later rung: left 1.0021, right 0.9979.
