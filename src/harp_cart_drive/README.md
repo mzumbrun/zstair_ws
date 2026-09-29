@@ -6,8 +6,8 @@ ROS 2 Jazzy drive node for the HARP cart on `rpi4u`: `cmd_vel` in, `odom` out, R
 | Rung | Scope | Status |
 |---|---|---|
 | 2a | Read-only: encoders, battery → `/odom`, TF, diagnostics | **PASSED 2026-09-28** |
-| 2b | `cmd_vel` → cmd 40, timeout, saturation, fault latch, controlled stop (**on blocks**) | This build (0.2.2) |
-| 2c | Floor acceptance: ±0.2% straight run through ROS 2 | Next |
+| 2b | `cmd_vel` → cmd 40, timeout, saturation, fault latch, controlled stop (**on blocks**) | **PASSED 2026-09-28** (T1–T8; see carry-in for as-run) |
+| 2c | Floor acceptance: ±0.2% straight run through ROS 2 | **Next** (procedure below) |
 
 ## Conventions
 
@@ -91,3 +91,87 @@ ros2 run harp_cart_drive enc_snapshot --compare /tmp/kill.json
 ```
 
 Rung 2b passes when T1–T8 all pass. Then rung 2c (floor).
+
+## Rung 2b result (as-run, 2026-09-28, on blocks)
+
+| T | Test | Result | Verdict |
+|---|---|---|---|
+| 1 | +0.2112 m/s | −0.091% / −0.091% | PASS |
+| 2 | −0.2112 m/s | −0.063% / −0.054% | PASS |
+| 3 | ω +0.5 → −509 / +509 | −0.082% / −0.064%; left wheel backward | PASS |
+| 4 | (0.42, 1.0) → 646 / 2000 | −0.062% / −0.094%; ratio 0.3231 vs 0.3230 | PASS |
+| 5 | Abandoned `cmd_vel` | 512 / 538 counts, still at 0.80 s (pred. 462–562, 0.67–0.82 s) | PASS |
+| 6 | kill -9 at 1,000 c/s | post-kill 225 / 230 counts (≈ 48 mm): 0.2 s timeout confirmed | PASS |
+| 7 | Ctrl-C controlled stop | 0.57 s, 206 / 232 counts, clean FINAL | PASS |
+| 8 | Link under motion | ~13,940 transactions, 0 retries/failures, p99 1.28 ms, max 3.15 ms | PASS (fault rate < 1/4,400 at 95%) |
+
+**Stop baseline (replaces the idealized model; T1–T4 stop bands were a recorded prediction
+miss):** measured from the node's stop command, decel M1 ≈ 2,430 c/s² and M2 ≈ 2,160 c/s²
+against 2,360 commanded. `speed_check` stop counts include about 0.1 s of message and
+cycle delay (T1: 310/336 = 100 + 210/236). Timeout stop from the 2,000 c/s cap ≈ 370–390 mm.
+
+**Finding:** cmd 40 ramps each motor at the same rate, so ramps don't preserve curvature
+(the slower wheel finishes first). Per-wheel accel is deferred until after 2c.
+
+## Rung 2c procedure — FLOOR acceptance
+
+**Goal:** reproduce the bring-up ±0.2% straight run through ROS 2. Code is unchanged from
+2b; this rung tests the whole chain against physical truth.
+
+**Setup**
+- Hard floor, straight lane ≥ 6 m, plus ≥ 0.3 m clear beyond the end (timeout stop at
+  test speed ≈ 0.10–0.11 m).
+- Tape line along the lane with a sharp **start cross-mark**.
+- A **fixed pointer** on the chassis reaching down to just above the tape: a stiff card or
+  rod, ideally on the drive-axle centerline. A pointer off the axle adds < 1 mm along-line
+  at the expected ~2.7° end heading (L_p·θ²/2 = 0.3 mm for L_p = 0.3 m).
+- Tape measure hooked at the start mark. Read to ±1 mm; that is 0.02% at 5 m.
+
+**Each run (do 3 runs, forward)**
+1. Node stopped: `ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json`
+2. Terminal A: `ros2 launch harp_cart_drive cart_drive.launch.py`
+3. Align the pointer on the start mark. Don't touch the cart after this.
+4. Terminal B: `ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5`
+   It records steady-state wheel speeds (check 1) and the floor stop counts (baseline).
+5. After the cart stops, measure (a) the **along-tape distance** from the start mark to the
+   pointer, and (b) the **lateral offset** of the pointer from the tape line (right +).
+6. Ctrl-C terminal A and record the FINAL block: accumulated counts, path, x, y, yaw.
+7. `ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json` (check 2).
+8. Check 3: error % = (odom x − tape) / tape × 100.
+
+**Predictions**
+
+| Quantity | Prediction | Basis |
+|---|---|---|
+| Distance per run | ≈ 4.9–5.0 m (about 23,300–23,700 counts) | 0.2112 m/s × 23.5 s including ramps |
+| Wheel speeds | 1,000 c/s each, within the 2b spread (~−0.05 to −0.09%) | 2b; floor load may add small droop |
+| Lateral offset | about **116 mm right** (±50 mm) | M1 larger wheel (96.0 vs 95.6 mm), symmetric model |
+| odom y, yaw | y ≈ 0; yaw within about ±1° (start/stop kicks ~0.7°) | Encoders see equal counts; the curve is invisible to odometry |
+| odom x vs tape | odom reads **≈ +0.036% long** (≈ +1.8 mm at 5 m) | Curve: along-line distance = path × (1 − θ²/6), θ ≈ 2.7° |
+| Floor stop counts | at or below on-blocks 210 / 236 (+ ~100 delay) | Rolling friction helps decel |
+
+**Pass criteria (all three runs)**
+
+| # | Check | Pass |
+|---|---|---|
+| 1 | Command path on floor | 1,000 c/s ±0.2% each wheel |
+| 2 | Plumbing identity | snapshot delta = node accumulated counts, within 1 count |
+| 3 | System (truth) | odom x within ±0.2% of tape (±10 mm at 5 m) |
+
+If check 3 fails while 1 and 2 pass, the error is in the truth measurement or in
+D_eff (95.8 mm), not in the node. A consistent-sign error across all three runs means
+D_eff needs refining; that is a constants update, not a code change.
+
+**Also record** (not pass criteria): the lateral offset, since it is the first direct
+measurement of the M1/M2 wheel ratio and sets up the per-wheel multiplier rung; and the
+floor stop counts, as the loaded stop baseline.
+
+## Rung 2c result (as-run)
+
+| Run | M1 / M2 speed error | Identity Δ (counts) | Tape (mm) | odom x (mm) | Error % | Lateral (mm, right +) | odom yaw | Stop counts M1 / M2 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | | | | | | | | |
+| 2 | | | | | | | | |
+| 3 | | | | | | | | |
+| **Mean** | | | | | | | | |
+
