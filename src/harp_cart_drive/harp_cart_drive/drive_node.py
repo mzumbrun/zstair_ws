@@ -386,11 +386,6 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        # Ctrl-C under ros2 launch delivers SIGINT twice (terminal process group,
-        # then launch forwards its own). Ignore further signals so the second
-        # one cannot abort the controlled stop midway.
-        signal.signal(signal.SIGINT, signal.SIG_IGN)
-        signal.signal(signal.SIGTERM, signal.SIG_IGN)
         if node is not None:
             try:
                 node.controlled_stop()
