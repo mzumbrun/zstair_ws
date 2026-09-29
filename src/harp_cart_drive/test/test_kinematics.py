@@ -105,3 +105,14 @@ def test_inverse_forward_round_trip():
         dl, dr = wheel_distances(GEO, m1, m2)
         ds, dth = body_increment(GEO, dl, dr)
         assert ds == pytest.approx(v, abs=3e-4) and dth == pytest.approx(w, abs=2e-3)
+
+
+# ---- rung 2b hand-calculated target table (independent of inverse()) ------
+@pytest.mark.parametrize("v,w,m1,m2", [
+    (0.2112, 0.0, 1000, 1000),      # 0.2112 x 4735.1 = 1000.1
+    (-0.2112, 0.0, -1000, -1000),
+    (0.0, 0.5, -509, 509),          # 0.5 x 0.215 = 0.1075 m/s x 4735.1 = 509.0
+    (0.42, 1.0, 646, 2000),         # 970.7 / 3006.8 scaled by 2000/3006.8
+])
+def test_rung2b_target_table(v, w, m1, m2):
+    assert inverse(GEO, v, w, 2000) == (m1, m2)

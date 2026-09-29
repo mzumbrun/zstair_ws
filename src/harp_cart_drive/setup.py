@@ -5,7 +5,7 @@ package_name = "harp_cart_drive"
 
 setup(
     name=package_name,
-    version="0.2.1",
+    version="0.2.2",
     packages=[package_name],
     data_files=[
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
@@ -23,6 +23,7 @@ setup(
         "console_scripts": [
             "drive_node = harp_cart_drive.drive_node:main",
             "enc_snapshot = harp_cart_drive.enc_snapshot:main",
+            "speed_check = harp_cart_drive.speed_check:main",
         ],
     },
 )

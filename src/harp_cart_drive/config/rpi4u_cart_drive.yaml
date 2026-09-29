@@ -1,4 +1,4 @@
-# HARP cart drive, rpi4u. Rung 2a (read-only).
+# HARP cart drive, rpi4u. Rung 2b (cmd_vel command path). ON BLOCKS until 2b passes.
 # Constants from Cart Drive Bring-Up As-Run v1.0, section 4.
 harp_cart_drive:
   ros__parameters:
@@ -10,7 +10,12 @@ harp_cart_drive:
     low_voltage_warn_v: 10.8      # true volts; RoboClaw cutoff ~10.1 V true
     fault_consecutive_limit: 3
     stats_period_s: 10.0
-    speed_cap_counts_s: 2000.0    # plausibility check only in 2a
+    motion_enabled: true          # false = rung 2a read-only behavior
+    speed_cap_counts_s: 2000.0    # 0.422 m/s hard floor; curvature-preserving saturation
+    accel_counts_s2: 2360         # 0.498 m/s^2, cmd 40 ramp (accel and decel)
+    cmd_vel_timeout_s: 0.25       # stop from 0.422 m/s: 106 mm + 179 mm ramp
+    write_fault_limit: 3          # consecutive failed cmd 40 writes -> latch
+    stop_timeout_s: 2.0           # controlled stop on Ctrl-C/SIGTERM
 
     counts_per_rev: 1425.1
     wheel_diameter_m: 0.0958

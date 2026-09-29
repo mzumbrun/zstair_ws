@@ -1,7 +1,7 @@
 """Minimal RoboClaw packet-serial transport for the HARP cart. No ROS imports.
 
-RUNG 2a IS READ-ONLY. This class deliberately has no write/motion methods;
-they are added in rung 2b after the read path is proven.
+Rung 2b adds exactly one write: SpeedAccelM1M2 (cmd 40). Read path was
+proven in rung 2a (0 errors, identity check exact over 17 m).
 
 Protocol notes (packet serial):
   * CRC16-CCITT, poly 0x1021, init 0.
@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 CMD_READ_VERSION = 21
 CMD_READ_MAIN_BATTERY = 24
 CMD_READ_ENCODERS = 78
+CMD_SPEED_ACCEL_M1M2 = 40
+ACK = 0xFF
 
 
 def crc16(data: bytes, crc: int = 0) -> int:
@@ -104,7 +106,39 @@ class RoboClawLink:
         self.stats.consecutive_failures += 1
         return None
 
-    # ---- public read-only API --------------------------------------------
+    # ---- core write transaction ------------------------------------------
+    def _write(self, cmd: int, payload: bytes) -> bool:
+        """Send [addr, cmd, payload, CRC]; expect a single 0xFF ack.
+        Writes carry a CRC, so a corrupted command is rejected by the RoboClaw
+        (no ack) rather than executed. Retrying cmd 40 is idempotent."""
+        body = bytes([self.address, cmd]) + payload
+        pkt = body + struct.pack(">H", crc16(body))
+        for attempt in range(self.tries):
+            if attempt:
+                self.stats.retries += 1
+            self._ser.reset_input_buffer()
+            t0 = time.monotonic()
+            self._ser.write(pkt)
+            reply = self._ser.read(1)
+            dt_ms = (time.monotonic() - t0) * 1000.0
+            if len(reply) != 1 or reply[0] != ACK:
+                self.stats.short_reads += 1
+                continue
+            self.stats.transactions += 1
+            self.stats.consecutive_failures = 0
+            self.stats.record_latency(dt_ms)
+            return True
+        self.stats.failures += 1
+        self.stats.consecutive_failures += 1
+        return False
+
+    def speed_accel_m1m2(self, accel_counts_s2: int, m1_counts_s: int, m2_counts_s: int) -> bool:
+        """cmd 40: closed-loop speed on both motors with one accel/decel ramp.
+        accel is unsigned 32; speeds are signed 32 (counts/s)."""
+        payload = struct.pack(">Iii", int(accel_counts_s2), int(m1_counts_s), int(m2_counts_s))
+        return self._write(CMD_SPEED_ACCEL_M1M2, payload)
+
+    # ---- public read API --------------------------------------------
     def read_encoders(self):
         """cmd 78 -> (m1_raw, m2_raw) as unsigned 32-bit, or None.
         Caller differences them with kinematics.wrap_delta()."""

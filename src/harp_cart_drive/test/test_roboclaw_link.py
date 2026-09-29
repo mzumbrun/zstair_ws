@@ -67,3 +67,33 @@ def test_version_string():
     text = b"USB Roboclaw 2x15a v4.4.9\n\x00"
     reply = text + struct.pack(">H", crc16(bytes([0x80, 21]) + text))
     assert make([reply]).read_version() == "USB Roboclaw 2x15a v4.4.9"
+
+
+# ---- rung 2b: cmd 40 write path -------------------------------------------
+def test_speed_accel_packet_layout_and_crc():
+    link = make([b"\xff"])
+    assert link.speed_accel_m1m2(2360, -509, 509) is True
+    pkt = link._ser.writes[0]
+    assert len(pkt) == 16                                   # addr cmd 4+4+4 crc2
+    assert pkt[:2] == bytes([0x80, 40])
+    accel, m1, m2 = struct.unpack(">Iii", pkt[2:14])
+    assert (accel, m1, m2) == (2360, -509, 509)
+    assert struct.unpack(">H", pkt[14:])[0] == crc16(pkt[:14])
+
+
+def test_write_retries_on_missing_ack_then_succeeds():
+    link = make([b"", b"\xff"])
+    assert link.speed_accel_m1m2(2360, 1000, 1000) is True
+    assert link.stats.retries == 1 and len(link._ser.writes) == 2
+    assert link._ser.writes[0] == link._ser.writes[1]       # idempotent resend
+
+
+def test_write_exhausted_counts_failure():
+    link = make([b""] * 4)
+    assert link.speed_accel_m1m2(2360, 0, 0) is False
+    assert link.stats.failures == 1 and link.stats.consecutive_failures == 1
+
+
+def test_wrong_ack_byte_is_not_success():
+    link = make([b"\x00"] * 4)
+    assert link.speed_accel_m1m2(2360, 0, 0) is False

@@ -2,8 +2,8 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>harp_cart_drive</name>
-  <version>0.2.1</version>
-  <description>HARP cart differential-drive node (RoboClaw over USB). Rung 2a: read-only odometry.</description>
+  <version>0.2.2</version>
+  <description>HARP cart differential-drive node (RoboClaw over USB). Rung 2b: cmd_vel command path.</description>
   <maintainer email="todo@example.com">Mike</maintainer>
   <license>Proprietary</license>
 
