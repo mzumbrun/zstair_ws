@@ -1,0 +1,655 @@
+straight_test.txt
+
+5m test 29 september
+
+======================
+
+*** PHYSICAL MEASUREMENTS
+TEST    DIR  ACT DIST    deltaY             deltaL%
+1       CW      5045mm      not measured       -1.6%
+2       CW      5047.2      156mm               -1.65%
+3       CW      5035.9      131.3mm             -1.44%
+4       CW   aborted - accidental touching    
+5       CW      5034.0      nm                  -1.4%
+6       CW      5016.8      nm                      
+7 no payload CW 5033.8      33    full distance  
+8 payload   cw  5030.6      212.7 full distance
+9 payload   cw  2521        105     half distance  
+
+updated CODE
+a payload      cw      5026.6      366     full distance 
+b no payload    cw      4995.2      190     full distance 
+
+new measurement technique
+1new no payload cw    4997.5  5032.2  384.4
+
+run Dir     measured  odom  measured Y
+F1    CW    5049.8    5036.4  55.0
+
+
+
+*** FROM CODE 
+TEST 1
+
+start
+raw M1(L) 23508  M2(R) 23414
+saved -> /tmp/floor.json
+
+[drive_node-1] [INFO] [1790699414.332169156] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790699414.334915045] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790699414.433923544] [harp_cart_drive]: Encoder baseline M1 23508  M2 23414 (raw uint32)
+
+end
+[drive_node-1] [INFO] [1790700114.147936799] [harp_cart_drive]: Controlled stop: 0.11 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790700114.152851875] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790700114.172613108] [harp_cart_drive]: latency ms p50 0.33 p95 0.96 p99 1.13 max 3.16 (n=20000) | period ms mean 50.00 max 50.71 | ok 28692 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790700114.174706770] [harp_cart_drive]: accumulated counts M1(L) 23508  M2(R) 23507
+[drive_node-1] [INFO] [1790700114.176778283] [harp_cart_drive]: from counts: L 4.9646 m  R 4.9644 m  mean 4.9645 m
+[drive_node-1] [INFO] [1790700114.178924280] [harp_cart_drive]: odom: path 4.9645 m  x 4.9641  y -0.0663  yaw -0.03 deg
+[drive_node-1] [INFO] [1790700114.181087128] [harp_cart_drive]: last raw M1 47016  M2 46921
+[INFO] [drive_node-1]: process has finished cleanly [pid 3502]
+
+comparison
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 47016  M2(R) 46921
+delta counts M1(L) 23508  M2(R) 23507
+distance L 4.9646 m  R 4.9644 m  mean 4.9645 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+
+===============================
+
+TEST2
+
+start
+raw M1(L) 23841  M2(R) 24498
+saved -> /tmp/floor.json
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)   +1000.1 c/s  vs +1000  error +0.012%
+  M2(R)   +1000.1 c/s  vs +1000  error +0.008%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +311  M2 +339
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+[drive_node-1] [INFO] [1790701295.513399550] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790701295.515789684] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790701295.519104825] [harp_cart_drive]: latency ms p50 0.28 p95 1.14 p99 1.56 max 3.10 (n=2357) | period ms mean 50.00 max 52.43 | ok 2358 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790701295.521499310] [harp_cart_drive]: accumulated counts M1(L) 23505  M2(R) 23505
+[drive_node-1] [INFO] [1790701295.523917853] [harp_cart_drive]: from counts: L 4.9640 m  R 4.9640 m  mean 4.9640 m
+[drive_node-1] [INFO] [1790701295.526460031] [harp_cart_drive]: odom: path 4.9640 m  x 4.9635  y -0.0675  yaw -0.00 deg
+[drive_node-1] [INFO] [1790701295.529021210] [harp_cart_drive]: last raw M1 47346  M2 48003
+[INFO] [drive_node-1]: process has finished cleanly [pid 3759]
+
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 47346  M2(R) 48003
+delta counts M1(L) 23505  M2(R) 23505
+distance L 4.9640 m  R 4.9640 m  mean 4.9640 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+==========================================================
+
+TEST 3
+
+start
+raw M1(L) 24450  M2(R) 25655
+saved -> /tmp/floor.json
+
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-12-29-25-728768-rpi4u-4522
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [4525]
+[drive_node-1] [INFO] [1790702968.159178831] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790702968.161908237] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790702968.262105176] [harp_cart_drive]: Encoder baseline M1 24450  M2 25655 (raw uint32)
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)    +999.8 c/s  vs +1000  error -0.018%
+  M2(R)    +999.8 c/s  vs +1000  error -0.023%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +311  M2 +337
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+mikez@rpi4u:~/zstair_ws$ 
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790703329.464240117] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790703329.468858672] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790703329.481297684] [harp_cart_drive]: latency ms p50 0.32 p95 1.01 p99 1.16 max 3.04 (n=14811) | period ms mean 50.00 max 50.71 | ok 14812 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790703329.483351597] [harp_cart_drive]: accumulated counts M1(L) 23498  M2(R) 23497
+[drive_node-1] [INFO] [1790703329.485477099] [harp_cart_drive]: from counts: L 4.9625 m  R 4.9623 m  mean 4.9624 m
+[drive_node-1] [INFO] [1790703329.487677078] [harp_cart_drive]: odom: path 4.9624 m  x 4.9619  y -0.0674  yaw -0.03 deg
+[drive_node-1] [INFO] [1790703329.489867280] [harp_cart_drive]: last raw M1 47948  M2 49152
+[INFO] [drive_node-1]: process has finished cleanly [pid 4525]
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)    +999.8 c/s  vs +1000  error -0.018%
+  M2(R)    +999.8 c/s  vs +1000  error -0.023%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +311  M2 +337
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 24851  M2(R) 26413
+delta counts M1(L) 401  M2(R) 758
+distance L 0.0847 m  R 0.1601 m  mean 0.1224 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+
+=================================
+TEST 4
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 25363  M2(R) 26805
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-13-21-40-052271-rpi4u-4679
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [4682]
+[drive_node-1] [INFO] [1790706102.472693471] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790706102.475458351] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790706102.576477938] [harp_cart_drive]: Encoder baseline M1 25363  M2 26805 (raw uint32)
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790706193.579656962] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790706193.583167165] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790706193.588581637] [harp_cart_drive]: latency ms p50 0.32 p95 0.97 p99 1.25 max 2.02 (n=3732) | period ms mean 50.00 max 50.73 | ok 3733 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790706193.591501504] [harp_cart_drive]: accumulated counts M1(L) 23498  M2(R) 23497
+[drive_node-1] [INFO] [1790706193.593711367] [harp_cart_drive]: from counts: L 4.9625 m  R 4.9623 m  mean 4.9624 m
+[drive_node-1] [INFO] [1790706193.595898989] [harp_cart_drive]: odom: path 4.9624 m  x 4.9619  y -0.0699  yaw -0.03 deg
+[drive_node-1] [INFO] [1790706193.598106001] [harp_cart_drive]: last raw M1 48861  M2 50302
+[INFO] [drive_node-1]: process has finished cleanly [pid 4682]
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)    +999.8 c/s  vs +1000  error -0.019%
+  M2(R)    +999.9 c/s  vs +1000  error -0.010%
+  ratio M1/M2 achieved +0.9999  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +311  M2 +339
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 48861  M2(R) 50302
+delta counts M1(L) 23498  M2(R) 23497
+distance L 4.9625 m  R 4.9623 m  mean 4.9624 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$
+=======================
+
+TEST 5
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 25707  M2(R) 27595
+saved -> /tmp/floor.json
+
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-13-36-57-044884-rpi4u-4741
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [4744]
+[drive_node-1] [INFO] [1790707019.474344479] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790707019.477084100] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790707019.576808253] [harp_cart_drive]: Encoder baseline M1 25707  M2 27595 (raw uint32)
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)    +999.8 c/s  vs +1000  error -0.018%
+  M2(R)    +999.7 c/s  vs +1000  error -0.027%
+  ratio M1/M2 achieved +1.0001  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +311  M2 +339
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790707102.331169877] [harp_cart_drive]: Controlled stop: 0.11 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790707102.336737633] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790707102.341326480] [harp_cart_drive]: latency ms p50 0.32 p95 0.99 p99 1.27 max 2.31 (n=3394) | period ms mean 50.00 max 50.63 | ok 3395 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790707102.343460017] [harp_cart_drive]: accumulated counts M1(L) 23498  M2(R) 23497
+[drive_node-1] [INFO] [1790707102.345658997] [harp_cart_drive]: from counts: L 4.9625 m  R 4.9623 m  mean 4.9624 m
+[drive_node-1] [INFO] [1790707102.347852848] [harp_cart_drive]: odom: path 4.9624 m  x 4.9619  y -0.0694  yaw -0.03 deg
+[drive_node-1] [INFO] [1790707102.350047847] [harp_cart_drive]: last raw M1 49205  M2 51092
+[INFO] [drive_node-1]: process has finished cleanly [pid 4744]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 49205  M2(R) 51092
+delta counts M1(L) 23498  M2(R) 23497
+distance L 4.9625 m  R 4.9623 m  mean 4.9624 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$
+===================================
+
+wheel od check
+M1: 95.7, 95.5, 95.6 by caliber; 95.5 by circ
+M2: 95.7, 95.7, 95.8 by caliber; 95.8 by circ
+
+tape check
+tape used: metal, 33ft
+cross check tape: metal, 16 ft
+result: both matched
+=========================
+
+TEST 6
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 0  M2(R) 0
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-16-17-04-578240-rpi4u-2822
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [2829]
+[drive_node-1] [INFO] [1790716628.224843323] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790716628.227640067] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790716628.501325886] [harp_cart_drive]: Encoder baseline M1 0  M2 0 (raw uint32)
+[drive_node-1] [INFO] [1790716638.455963099] [harp_cart_drive]: latency ms p50 0.32 p95 0.57 p99 1.00 max 1.20 (n=410) | period ms mean 50.00 max 50.59 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.45 s (after 0.92 s settle):
+  M1(L)   +1000.3 c/s  vs +1000  error +0.027%
+  M2(R)   +1000.3 c/s  vs +1000  error +0.027%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +311  M2 +340
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+[drive_node-1] [INFO] [1790716802.753599698] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790716802.757103110] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790716802.765444949] [harp_cart_drive]: latency ms p50 0.32 p95 1.00 p99 1.15 max 2.83 (n=7146) | period ms mean 50.00 max 50.76 | ok 7147 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790716802.767594252] [harp_cart_drive]: accumulated counts M1(L) 23508  M2(R) 23507
+[drive_node-1] [INFO] [1790716802.769917909] [harp_cart_drive]: from counts: L 4.9646 m  R 4.9644 m  mean 4.9645 m
+[drive_node-1] [INFO] [1790716802.772329326] [harp_cart_drive]: odom: path 4.9645 m  x 4.9640  y -0.0710  yaw -0.03 deg
+[drive_node-1] [INFO] [1790716802.774622927] [harp_cart_drive]: last raw M1 23508  M2 23507
+[INFO] [drive_node-1]: process has finished cleanly [pid 2829]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 23508  M2(R) 23507
+delta counts M1(L) 23508  M2(R) 23507
+distance L 4.9646 m  R 4.9644 m  mean 4.9645 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$ 
+
+====================
+TEST 7 - no payload
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 330  M2(R) 1039
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-16-29-49-794642-rpi4u-2895
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [2898]
+[drive_node-1] [INFO] [1790717392.213890799] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790717392.216672633] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790717392.317325840] [harp_cart_drive]: Encoder baseline M1 330  M2 1039 (raw uint32)
+[drive_node-1] [INFO] [1790717402.267852777] [harp_cart_drive]: latency ms p50 0.34 p95 0.91 p99 1.07 max 1.93 (n=410) | period ms mean 50.00 max 50.55 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790717546.569022556] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790717546.573694303] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790717546.579838245] [harp_cart_drive]: latency ms p50 0.33 p95 0.97 p99 1.15 max 3.26 (n=6326) | period ms mean 50.00 max 50.89 | ok 6327 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790717546.582573283] [harp_cart_drive]: accumulated counts M1(L) 23504  M2(R) 23503
+[drive_node-1] [INFO] [1790717546.584958045] [harp_cart_drive]: from counts: L 4.9638 m  R 4.9636 m  mean 4.9637 m
+[drive_node-1] [INFO] [1790717546.587173679] [harp_cart_drive]: odom: path 4.9637 m  x 4.9632  y -0.0673  yaw -0.03 deg
+[drive_node-1] [INFO] [1790717546.589345017] [harp_cart_drive]: last raw M1 23834  M2 24542
+[INFO] [drive_node-1]: process has finished cleanly [pid 2898]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 23834  M2(R) 24542
+delta counts M1(L) 23504  M2(R) 23503
+distance L 4.9638 m  R 4.9636 m  mean 4.9637 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$ 
+
+mikez@rpi4u:~$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)   +1000.2 c/s  vs +1000  error +0.018%
+  M2(R)   +1000.1 c/s  vs +1000  error +0.013%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +310  M2 +337
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+========================
+TEST 8 - like 1-6 w/payload
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 1457  M2(R) 2069
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-16-48-20-356081-rpi4u-2964
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [2967]
+
+[drive_node-1] [INFO] [1790718502.782031271] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790718502.784819704] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790718502.883795253] [harp_cart_drive]: Encoder baseline M1 1457  M2 2069 (raw uint32)
+[drive_node-1] [INFO] [1790718512.837823022] [harp_cart_drive]: latency ms p50 0.34 p95 0.85 p99 1.05 max 1.53 (n=410) | period ms mean 50.00 max 50.68 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 23.5
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)   +1000.0 c/s  vs +1000  error -0.005%
+  M2(R)   +1000.0 c/s  vs +1000  error -0.000%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +312  M2 +339
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+[drive_node-1] [INFO] [1790718580.737410944] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790718580.742232240] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790718580.746502761] [harp_cart_drive]: latency ms p50 0.33 p95 1.02 p99 1.20 max 3.13 (n=3193) | period ms mean 50.00 max 50.87 | ok 3194 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790718580.748926659] [harp_cart_drive]: accumulated counts M1(L) 23502  M2(R) 23501
+[drive_node-1] [INFO] [1790718580.751444890] [harp_cart_drive]: from counts: L 4.9633 m  R 4.9631 m  mean 4.9632 m
+[drive_node-1] [INFO] [1790718580.753704530] [harp_cart_drive]: odom: path 4.9632 m  x 4.9628  y -0.0697  yaw -0.03 deg
+[drive_node-1] [INFO] [1790718580.755958966] [harp_cart_drive]: last raw M1 24959  M2 25570
+[INFO] [drive_node-1]: process has finished cleanly [pid 2967]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 24959  M2(R) 25570
+delta counts M1(L) 23502  M2(R) 23501
+distance L 4.9633 m  R 4.9631 m  mean 4.9632 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$ 
+=====================
+TEST 9 at half distance with payload
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 1838  M2(R) 2790
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-17-02-26-117416-rpi4u-3017
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [3020]
+[drive_node-1] [INFO] [1790719348.552881176] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790719348.555667022] [harp_cart_drive]: counts/m L 4735.1  R 4735.1  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790719348.656369261] [harp_cart_drive]: Encoder baseline M1 1838  M2 2790 (raw uint32)
+[drive_node-1] [INFO] [1790719358.606623607] [harp_cart_drive]: latency ms p50 0.32 p95 0.89 p99 1.05 max 1.13 (n=410) | period ms mean 50.00 max 50.50 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~$ ros2 run harp_cart_drive speed_check --v 0.2112 --duration 11.75
+cmd v=+0.2112 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 10.75 s (after 0.92 s settle):
+  M1(L)   +1000.3 c/s  vs +1000  error +0.032%
+  M2(R)   +1000.3 c/s  vs +1000  error +0.032%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.55 s after last cmd_vel; counts M1 +311  M2 +338
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+mikez@rpi4u:~$ 
+
+[drive_node-1] [INFO] [1790719441.608707096] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790719441.612776247] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790719441.617648298] [harp_cart_drive]: latency ms p50 0.33 p95 0.93 p99 1.09 max 2.00 (n=3812) | period ms mean 50.00 max 50.76 | ok 3813 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790719441.620371553] [harp_cart_drive]: accumulated counts M1(L) 11756  M2(R) 11754
+[drive_node-1] [INFO] [1790719441.622608349] [harp_cart_drive]: from counts: L 2.4827 m  R 2.4823 m  mean 2.4825 m
+[drive_node-1] [INFO] [1790719441.624808015] [harp_cart_drive]: odom: path 2.4825 m  x 2.4823  y -0.0345  yaw -0.06 deg
+[drive_node-1] [INFO] [1790719441.627067829] [harp_cart_drive]: last raw M1 13594  M2 14544
+[INFO] [drive_node-1]: process has finished cleanly [pid 3020]
+
+=====================
+
+TESTING WITH NEW VALUES IN CODE
+rung2c with updated wheel dia and enc
+
+TEST A
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 2468  M2(R) 4157
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-18-08-57-556502-rpi4u-5426
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [5429]
+[drive_node-1] [INFO] [1790723340.122675432] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790723340.125981472] [harp_cart_drive]: counts/m L 4667.4  R 4667.4  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790723340.226193946] [harp_cart_drive]: Encoder baseline M1 2468  M2 4157 (raw uint32)
+[drive_node-1] [INFO] [1790723350.185927749] [harp_cart_drive]: latency ms p50 0.25 p95 0.65 p99 0.94 max 0.99 (n=410) | period ms mean 50.00 max 50.56 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.21425 --duration 23.5
+cmd v=+0.2142 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.45 s (after 0.92 s settle):
+  M1(L)   +1000.3 c/s  vs +1000  error +0.032%
+  M2(R)   +1000.3 c/s  vs +1000  error +0.032%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +362  M2 +390
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+[drive_node-1] [INFO] [1790723434.883087953] [harp_cart_drive]: Controlled stop: 0.11 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790723434.886822156] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790723434.891118413] [harp_cart_drive]: latency ms p50 0.36 p95 1.10 p99 1.32 max 2.97 (n=3882) | period ms mean 50.00 max 52.05 | ok 3883 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790723434.893598764] [harp_cart_drive]: accumulated counts M1(L) 23559  M2(R) 23556
+[drive_node-1] [INFO] [1790723434.896131023] [harp_cart_drive]: from counts: L 5.0476 m  R 5.0469 m  mean 5.0473 m
+[drive_node-1] [INFO] [1790723434.898363836] [harp_cart_drive]: odom: path 5.0473 m  x 5.0467  y -0.0745  yaw -0.09 deg
+[drive_node-1] [INFO] [1790723434.900745947] [harp_cart_drive]: last raw M1 26027  M2 27713
+[INFO] [drive_node-1]: process has finished cleanly [pid 5429]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 26027  M2(R) 27713
+delta counts M1(L) 23559  M2(R) 23556
+distance L 5.0476 m  R 5.0469 m  mean 5.0473 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$ 
+
+==============================
+
+TEST b
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 2815  M2(R) 5519
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-29-18-18-47-666950-rpi4u-5490
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [5493]
+[drive_node-1] [INFO] [1790723930.211989264] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790723930.214885713] [harp_cart_drive]: counts/m L 4667.4  R 4667.4  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790723930.314678394] [harp_cart_drive]: Encoder baseline M1 2815  M2 5519 (raw uint32)
+[drive_node-1] [INFO] [1790723940.271637254] [harp_cart_drive]: latency ms p50 0.24 p95 0.47 p99 0.71 max 0.75 (n=410) | period ms mean 50.00 max 50.33 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.21425 --duration 23.5
+cmd v=+0.2142 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.45 s (after 0.92 s settle):
+  M1(L)   +1000.1 c/s  vs +1000  error +0.011%
+  M2(R)   +1000.2 c/s  vs +1000  error +0.016%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.70 s after last cmd_vel; counts M1 +312  M2 +337
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+[drive_node-1] [INFO] [1790723997.574535060] [harp_cart_drive]: Controlled stop: 0.11 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790723997.578804427] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790723997.582956147] [harp_cart_drive]: latency ms p50 0.30 p95 0.87 p99 1.31 max 2.67 (n=2759) | period ms mean 50.00 max 51.60 | ok 2760 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790723997.585674689] [harp_cart_drive]: accumulated counts M1(L) 23505  M2(R) 23502
+[drive_node-1] [INFO] [1790723997.587850030] [harp_cart_drive]: from counts: L 5.0360 m  R 5.0354 m  mean 5.0357 m
+[drive_node-1] [INFO] [1790723997.590065278] [harp_cart_drive]: odom: path 5.0357 m  x 5.0352  y -0.0718  yaw -0.09 deg
+[drive_node-1] [INFO] [1790723997.592352748] [harp_cart_drive]: last raw M1 26320  M2 29021
+[INFO] [drive_node-1]: process has finished cleanly [pid 5493]
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --compare /tmp/floor.json
+raw M1(L) 26320  M2(R) 29021
+delta counts M1(L) 23505  M2(R) 23502
+distance L 5.0360 m  R 5.0354 m  mean 5.0357 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+mikez@rpi4u:~/zstair_ws$ 
+
+==================================
+
+Retesting with new measurement setup (3 dowels, down cl), 30 Sept 2026
+
+TEST 1
+
+NO payload
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 799  M2(R) 21879
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-30-09-21-11-996035-rpi4u-3929
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [3932]
+[drive_node-1] [INFO] [1790778074.471362533] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790778074.474190556] [harp_cart_drive]: counts/m L 4667.4  R 4667.4  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790778074.577374438] [harp_cart_drive]: Encoder baseline M1 799  M2 21879 (raw uint32)
+[drive_node-1] [INFO] [1790778084.531361519] [harp_cart_drive]: latency ms p50 0.34 p95 0.88 p99 1.01 max 1.12 (n=410) | period ms mean 50.00 max 50.53 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790778227.779921793] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790778227.785763099] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790778227.793488162] [harp_cart_drive]: latency ms p50 0.34 p95 0.97 p99 1.16 max 2.07 (n=6283) | period ms mean 50.00 max 50.67 | ok 6284 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790778227.795715248] [harp_cart_drive]: accumulated counts M1(L) 23487  M2(R) 23487
+[drive_node-1] [INFO] [1790778227.797900632] [harp_cart_drive]: from counts: L 5.0322 m  R 5.0322 m  mean 5.0322 m
+[drive_node-1] [INFO] [1790778227.800124255] [harp_cart_drive]: odom: path 5.0322 m  x 5.0316  y -0.0715  yaw -0.00 deg
+[drive_node-1] [INFO] [1790778227.802396323] [harp_cart_drive]: last raw M1 24286  M2 45366
+[INFO] [drive_node-1]: process has finished cleanly [pid 3932]
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.21425 --duration 23.5
+cmd v=+0.2142 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.45 s (after 0.92 s settle):
+  M1(L)    +999.4 c/s  vs +1000  error -0.058%
+  M2(R)    +999.4 c/s  vs +1000  error -0.058%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +310  M2 +339
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+
+  raw M1(L) 24286  M2(R) 45366
+delta counts M1(L) 23487  M2(R) 23487
+distance L 5.0322 m  R 5.0322 m  mean 5.0322 m
+PASS if node 'accumulated counts' match these deltas within 1 count
+=============================
+
+TEST F1
+with payload
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 1285  M2(R) 24121
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-30-10-05-11-770752-rpi4u-4037
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [4040]
+[drive_node-1] [INFO] [1790780714.240095184] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790780714.242958369] [harp_cart_drive]: counts/m L 4667.4  R 4667.4  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790780714.347039815] [harp_cart_drive]: Encoder baseline M1 1285  M2 24121 (raw uint32)
+[drive_node-1] [INFO] [1790780724.297269875] [harp_cart_drive]: latency ms p50 0.32 p95 0.51 p99 0.63 max 1.05 (n=410) | period ms mean 50.00 max 50.46 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive speed_check --v 0.21425 --duration 23.5
+cmd v=+0.2142 m/s w=+0.0000 rad/s -> target M1(L) +1000  M2(R) +1000 counts/s
+Steady state over 22.50 s (after 0.92 s settle):
+  M1(L)   +1000.3 c/s  vs +1000  error +0.027%
+  M2(R)   +1000.3 c/s  vs +1000  error +0.027%
+  ratio M1/M2 achieved +1.0000  vs target +1.0000
+Commanded stop (zero cmd_vel): stationary 0.60 s after last cmd_vel; counts M1 +313  M2 +341
+  predicted |counts| 212-312 (ramp 212, +0-100 for cycle phase)
+mikez@rpi4u:~/zstair_ws$ 
+
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[drive_node-1] [INFO] [1790781038.049430508] [harp_cart_drive]: Controlled stop: 0.10 s, counts during stop M1 0 M2 0
+[drive_node-1] [INFO] [1790781038.055100931] [harp_cart_drive]: ==== RUNG 2b FINAL ====
+[drive_node-1] [INFO] [1790781038.065181583] [harp_cart_drive]: latency ms p50 0.34 p95 1.04 p99 1.17 max 2.87 (n=13273) | period ms mean 50.00 max 50.85 | ok 13274 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 1 sat 0
+[drive_node-1] [INFO] [1790781038.067334901] [harp_cart_drive]: accumulated counts M1(L) 23509  M2(R) 23505
+[drive_node-1] [INFO] [1790781038.069536071] [harp_cart_drive]: from counts: L 5.0369 m  R 5.0360 m  mean 5.0364 m
+[drive_node-1] [INFO] [1790781038.071776296] [harp_cart_drive]: odom: path 5.0364 m  x 5.0359  y -0.0733  yaw -0.11 deg
+[drive_node-1] [INFO] [1790781038.074086891] [harp_cart_drive]: last raw M1 24794  M2 47626
+[INFO] [drive_node-1]: process has finished cleanly [pid 4040]
+==========================
+
+TEST Aft1
+
+mikez@rpi4u:~/zstair_ws$ ros2 run harp_cart_drive enc_snapshot --save /tmp/floor.json
+raw M1(L) 1624  M2(R) 25073
+saved -> /tmp/floor.json
+mikez@rpi4u:~/zstair_ws$ ros2 launch harp_cart_drive cart_drive.launch.py
+[INFO] [launch]: All log files can be found below /home/mikez/.ros/log/2026-09-30-10-16-28-315627-rpi4u-4088
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [drive_node-1]: process started with pid [4092]
+[drive_node-1] [INFO] [1790781390.796250378] [harp_cart_drive]: RoboClaw: USB Roboclaw 2x15A v4.4.9  |  MOTION ENABLED (rung 2b)
+[drive_node-1] [INFO] [1790781390.799064135] [harp_cart_drive]: counts/m L 4667.4  R 4667.4  b 0.430 m  loop 20 Hz  cap 2000 c/s  accel 2360 c/s^2  cmd timeout 0.25 s
+[drive_node-1] [INFO] [1790781390.901567422] [harp_cart_drive]: Encoder baseline M1 1624  M2 25073 (raw uint32)
+[drive_node-1] [INFO] [1790781400.854747636] [harp_cart_drive]: latency ms p50 0.34 p95 0.94 p99 1.04 max 1.08 (n=410) | period ms mean 50.00 max 50.57 | ok 411 retry 0 fail 0 crc 0 short 0 implausible 0 | target 0 0 timeouts 0 sat 0
+
+aborted
+
+did 90 degree turn
+
+
+=====================
+SPIN DATA after much calibration, no scissor asm, with 20lb payload
+SPIN TESTING, 27Sept2026
+TRACK = 430mm
+DIR     M1      M2      ave     target   predicted   M1-Amp  M2-Amp  act_rot     over/under
+CW      6560    -6272   6416    6397    361.09      0.79    0.93    348.2   under
+CCW     -6490   6342    6416    6397    361.09      0.52    0.33    369.8   over
+CCW     -6489   6365    6427    6397    361.71      0.51    0.37    370.5   over
+CW      6554    -6261   6408    6397    360.61      0.73    0.91    349.5   under
+CCW     -6503   6344    6424    6397    361.51      0.70    0.91    367.0   over
+CW      6557    -6264   6410    6397    360.78      0.48    0.91    355.8   under
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+FIRST PASS DATA below, above results were after
+straight test data, 26Sept2026
+
+Test - 2m no load
+
+M1      M2      enc nom dist  M1-M2    Act dist M1  Act dist M2
+9506    9502        2011.0      4       2.014       2.002
+9499    9495        2009.5      4       2.010       2.000
+9502    9501        2010.5      1       2.003       2.007
+
+Test - 2m with approx 22 lb payload
+M1      M2      enc nom dist  M1-M2    Act dist M1  Act dist M2
+9501    9501        2010.4      1       1.990       1.988
+9511    9507        2012.1      4       2.027       2.010
+9508    9503        2011.3      5       2.025       2.010
+
+Interpretation:
+
+Case	M1 D_eff (mm)	M2 D_eff (mm)	Run-to-run SD	Both wheels
+No load	96.12 / 96.00 / 95.64	95.59 / 95.57 / 95.84	0.16–0.26%	95.79
+~22 lb	95.03 / 96.69 / 96.63	94.93 / 95.92 / 95.96	0.6–1.0%	95.86
+
+NET: The effective diameter is 95.8 mm, about 0.2% under nominal. Use 95.8 mm instead of 96.
+
+SPIN TESTING, 26Sept2026
+TRACK = 412mm
+DIR     M1      M2      ave     target   predicted   M1-Amp  M2-Amp  act_rot     over/under    
+CW      6445    -5864   6154    6129     361.51     0.93    0.97    339.7       under
+CCW     -6209   6084    6146    6129    361.04      0.96    0.94    350.5       under  
+CCW     -6398   5917    6158    6129    361.68      0.96    0.94    342.6       under
+CCW     -6381   5941    6161    6129    361.89      0.96    0.94    347.1       under
+CW      6368    -5950   6159    6129    361.77      0.96    0.96    345.3       under
+CW      6511    -5800   6156    6129    361.57      0.99    1.00    338.4       under
+
+TRACK = 430mm
+DIR     M1      M2      ave     target   predicted   M1-Amp  M2-Amp  act_rot     over/under 
+CW      6773    -6046   6410    6397    360.73      0.93    0.99    342.1       under
+CCW     -6511   6312    6412    6397    360.84      0.96    0.94    361.6       over
+CW      6752    -6084   6418    6397    361.21      0.94    1.06    350.5       under
+CCW     -6664   6206    6435    6397    362.16      0.94    0.94    363.2       over
+
+Interpretation
+Dir	Track setting	
+    Count mismatch	b_eff
+CCW	412	2.0%	424
+CCW	430	3.1%	429
+CW	412	6.8%	432
+CCW	412	7.1%	430
+CCW	430	7.1%	429
+CCW	412	7.8%	435
+CW	412	9.4%	438
+CW	430	10.4%	443
+CW	430	11.3%	453
+CW	412	11.6%	440
+
+Re-reducing with a 430 mm track. 
+The 412 mm runs commanded wheel travel for a 412 mm track. 
+On a real 430 mm track, perfect kinematics would give only 361.5° × 412/430 = 346.4° of rotation.
+
+Set	Expected rotation (430 mm, no slip)	Measured average	Error
+412 mm runs (6)	346.4°	343.9°	−0.7%
+430 mm runs, CCW (2)	~361.5°	362.4°	+0.2%
+430 mm runs, CW (2)	~361.0°	346.3°	−4.1%
+
+So the 412 mm set was nearly right once the geometry is corrected. 
+hat remains is the CW/CCW asymmetry: CCW is essentially perfect, while CW under-rotates by about 4%. 
+The CW runs also had the worst wheel mismatch (10–11%). 
+That points at the same cause as before, M2 drooping under load, 
+
+
+mikez@rpi4u:~$  python3 ~/steptune.py spin --nopid --dt 0.05
+M1 P 16.542 I 0.699 | M2 P 14.192 I 0.541 (RAM only)
+spin: clear area, Enter to run...
+Steady state (last 1 s): M1 -1.0%  M2 -12.8%  mismatch +11.8%
+Ripple (SD):  M1 0.7%  M2 0.9%
+Overshoot:    M1 +0.5%  M2 -10.2%
+Ramp time 0.25 s. Log saved: steplog_spin_111351.csv
+
+
+
+
