@@ -1,0 +1,149 @@
+harp scale data
+10/17/2026
+
+no white wood
+stair casters in forward drive position
+
++++++++++++Cart + Scissor
+
+1. Scissor in storage position, contact on drive wheels and stair casters
+ 
+scale 1 (left drive  ):    3.410 kg      7.52 lb   (std 1.7 g, n=31)  
+scale 2 (right drive ):    3.576 kg      7.88 lb   (std 1.4 g, n=33)  
+scale 3 (left caster ):    2.901 kg      6.40 lb   (std 1.6 g, n=30)  Stair caster
+scale 4 (right caster):    2.460 kg      5.42 lb   (std 1.3 g, n=33)  Stair Caster
+TOTAL                    :   12.347 kg     27.22 lb
+
+2. Scissor retracted to storage position but extended 186 mm to incipient tipping
+
+scale 1 (left drive  ):    0.002 kg      0.01 lb   (std 1.4 g, n=30)  
+scale 2 (right drive ):    0.101 kg      0.22 lb   (std 1.4 g, n=32)  
+scale 3 (left caster ):    6.351 kg     14.00 lb   (std 1.6 g, n=31)  stair caster
+scale 4 (right caster):    5.936 kg     13.09 lb   (std 2.1 g, n=34)  stair caster
+TOTAL                    :   12.390 kg     27.32 lb
+
+3. Scissor in storage position including fully retracted, floor casters
+
+scale 1 (left drive  ):    4.949 kg     10.91 lb   (std 1.8 g, n=31)  
+scale 2 (right drive ):    4.701 kg     10.36 lb   (std 1.9 g, n=33)  
+scale 3 (left caster ):    1.326 kg      2.92 lb   (std 2.2 g, n=30)  floor caster
+scale 4 (right caster):    1.415 kg      3.12 lb   (std 1.5 g, n=33)  floor caster
+TOTAL                    :   12.391 kg     27.32 lb
+
+
+Tests to determine CG
+
+TEST 1
+Cart + scissors --> ON FLOOR CASTERS
+
+H=0 mm
+scale 1 (left drive  ):    5.233 kg     11.54 lb   (std 1.7 g, n=30)  
+scale 2 (right drive ):    4.757 kg     10.49 lb   (std 1.9 g, n=33)  
+scale 3 (left caster ):    1.083 kg      2.39 lb   (std 1.9 g, n=30)  
+scale 4 (right caster):    1.413 kg      3.12 lb   (std 2.2 g, n=34)  
+TOTAL                    :   12.487 kg     27.53 lb
+
+H=50 mm
+scale 1 (left drive  ):    4.770 kg     10.52 lb   (std 1.5 g, n=30)  
+scale 2 (right drive ):    4.141 kg      9.13 lb   (std 1.5 g, n=33)  
+scale 3 (left caster ):    1.539 kg      3.39 lb   (std 1.7 g, n=31)  
+scale 4 (right caster):    2.042 kg      4.50 lb   (std 2.0 g, n=33)  
+TOTAL                    :   12.492 kg     27.54 lb
+
+H=100 mm
+scale 1 (left drive  ):    4.212 kg      9.29 lb   (std 1.7 g, n=31)  
+scale 2 (right drive ):    3.647 kg      8.04 lb   (std 1.4 g, n=33)  
+scale 3 (left caster ):    2.123 kg      4.68 lb   (std 1.4 g, n=30)  
+scale 4 (right caster):    2.508 kg      5.53 lb   (std 1.6 g, n=34)  
+TOTAL                    :   12.491 kg     27.54 lb
+
+H=150 mm
+scale 1 (left drive  ):    3.799 kg      8.38 lb   (std 1.7 g, n=31)  
+scale 2 (right drive ):    3.075 kg      6.78 lb   (std 1.6 g, n=33)  
+scale 3 (left caster ):    2.450 kg      5.40 lb   (std 1.9 g, n=30)  
+scale 4 (right caster):    3.141 kg      6.93 lb   (std 1.6 g, n=33)  
+TOTAL                    :   12.466 kg     27.48 lb
+
+H=200 mm
+scale 1 (left drive  ):    3.161 kg      6.97 lb   (std 1.2 g, n=30)  
+scale 2 (right drive ):    2.610 kg      5.75 lb   (std 1.6 g, n=32)  
+scale 3 (left caster ):    3.201 kg      7.06 lb   (std 1.4 g, n=30)  
+scale 4 (right caster):    3.504 kg      7.73 lb   (std 1.5 g, n=34)  
+TOTAL                    :   12.477 kg     27.51 lb
+
+TEST 2
+Cart + scissors --> ON STAIR CASTERS
+
+H=0 mm
+scale 1 (left drive  ):    3.504 kg      7.73 lb   (std 1.9 g, n=30)  
+scale 2 (right drive ):    3.941 kg      8.69 lb   (std 1.5 g, n=33)  
+scale 3 (left caster ):    2.812 kg      6.20 lb   (std 1.9 g, n=30)  
+scale 4 (right caster):    2.185 kg      4.82 lb   (std 1.4 g, n=33)  
+TOTAL                    :   12.443 kg     27.43 lb
+
+H=50 mm
+scale 1 (left drive  ):    2.609 kg      5.75 lb   (std 1.2 g, n=31)  
+scale 2 (right drive ):    2.989 kg      6.59 lb   (std 1.6 g, n=33)  
+scale 3 (left caster ):    3.690 kg      8.13 lb   (std 1.6 g, n=30)  
+scale 4 (right caster):    3.119 kg      6.88 lb   (std 1.7 g, n=33)  
+TOTAL                    :   12.407 kg     27.35 lb
+
+H=100 mm
+scale 1 (left drive  ):    1.746 kg      3.85 lb   (std 1.3 g, n=30)  
+scale 2 (right drive ):    2.027 kg      4.47 lb   (std 1.7 g, n=33)  
+scale 3 (left caster ):    4.566 kg     10.07 lb   (std 2.2 g, n=30)  
+scale 4 (right caster):    4.078 kg      8.99 lb   (std 1.5 g, n=34)  
+TOTAL                    :   12.417 kg     27.37 lb
+
+H=150mm
+scale 1 (left drive  ):    0.660 kg      1.45 lb   (std 1.7 g, n=31)  
+scale 2 (right drive ):    1.150 kg      2.53 lb   (std 1.3 g, n=32)  
+scale 3 (left caster ):    5.674 kg     12.51 lb   (std 1.4 g, n=30)  
+scale 4 (right caster):    4.945 kg     10.90 lb   (std 1.8 g, n=34)  
+TOTAL                    :   12.428 kg     27.40 lb
+
+H=175mm
+scale 1 (left drive  ):    0.034 kg      0.08 lb   (std 1.6 g, n=30)  
+scale 2 (right drive ):    0.397 kg      0.87 lb   (std 1.8 g, n=33)  
+scale 3 (left caster ):    6.326 kg     13.95 lb   (std 1.8 g, n=31)  
+scale 4 (right caster):    5.690 kg     12.54 lb   (std 1.4 g, n=33)  
+TOTAL                    :   12.447 kg     27.44 lb
+
+TEST 2 REDO - wheels for centrally located on scales
+Cart + scissors --> ON STAIR CASTERS
+
+H=0mm
+scale 1 (left drive  ):    3.656 kg      8.06 lb   (std 1.4 g, n=30)  
+scale 2 (right drive ):    3.928 kg      8.66 lb   (std 1.3 g, n=33)  
+scale 3 (left caster ):    2.660 kg      5.86 lb   (std 2.0 g, n=30)  
+scale 4 (right caster):    2.174 kg      4.79 lb   (std 1.7 g, n=34)  
+TOTAL                    :   12.418 kg     27.38 lb
+
+H=50 mm
+scale 1 (left drive  ):    2.738 kg      6.04 lb   (std 1.2 g, n=31)  
+scale 2 (right drive ):    2.900 kg      6.39 lb   (std 1.4 g, n=33)  
+scale 3 (left caster ):    3.566 kg      7.86 lb   (std 1.5 g, n=30)  
+scale 4 (right caster):    3.227 kg      7.11 lb   (std 1.5 g, n=34)  
+TOTAL                    :   12.432 kg     27.41 lb
+
+H=100 mm
+scale 1 (left drive  ):    1.871 kg      4.13 lb   (std 1.6 g, n=31)  
+scale 2 (right drive ):    1.951 kg      4.30 lb   (std 1.5 g, n=32)  
+scale 3 (left caster ):    4.442 kg      9.79 lb   (std 1.8 g, n=30)  
+scale 4 (right caster):    4.182 kg      9.22 lb   (std 1.4 g, n=34)  
+TOTAL                    :   12.446 kg     27.44 lb
+
+H=150 mm
+scale 1 (left drive  ):    0.771 kg      1.70 lb   (std 1.7 g, n=31)  
+scale 2 (right drive ):    1.162 kg      2.56 lb   (std 1.6 g, n=32)  
+scale 3 (left caster ):    5.547 kg     12.23 lb   (std 2.0 g, n=31)  
+scale 4 (right caster):    4.963 kg     10.94 lb   (std 1.6 g, n=33)  
+TOTAL                    :   12.443 kg     27.43 lb
+
+H=175 mm
+scale 1 (left drive  ):    0.347 kg      0.77 lb   (std 2.1 g, n=31)  
+scale 2 (right drive ):    0.715 kg      1.58 lb   (std 1.4 g, n=32)  
+scale 3 (left caster ):    5.979 kg     13.18 lb   (std 1.6 g, n=30)  
+scale 4 (right caster):    5.407 kg     11.92 lb   (std 1.6 g, n=33)  
+TOTAL                    :   12.447 kg     27.44 lb
+
